@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
-const Home = () => <h1>Home Page</h1>;
-const About = () => <h1>About Page</h1>;
+import { routes } from './routes';
 
 //JSX
 const App = props => (
@@ -14,12 +13,22 @@ const App = props => (
                     <Link to="/">Home</Link>
                 </li>
                 <li>
-                    <Link to="/about">About</Link>
+                    <Link to="/categories">Category</Link>
                 </li>
             </ul>
 
-            <Route exact path="/" component={Home} />
-            <Route exact path="/about" component={About} />
+            <hr />
+
+            <Switch>
+                {routes.map((route, key) => (
+                    <Route
+                        key={key}
+                        exact
+                        path={route.path}
+                        component={route.component}
+                    />
+                ))}
+            </Switch>
         </>
     </Router>
 );
