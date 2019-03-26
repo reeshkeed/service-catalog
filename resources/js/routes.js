@@ -18,6 +18,7 @@ export const routes = [
     {
         path: '/categories',
         component: CategoryList,
+        auth: true,
     },
 
     {

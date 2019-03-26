@@ -18,5 +18,13 @@ Route::namespace('Api')->name('api.')->group(function () {
 
         //Return authentication user
         Route::get('user', 'Auth\SessionsController@user')->name('user');
+
+        Route::get('signout', 'Auth\SessionsController@signout')->name('signout');
+    });
+
+    Route::middleware('auth:api')->group(function() {
+      Route::resource('categories', 'CategoriesController', [
+        'except' => ['cretae', 'edit']
+      ]);
     });
 });

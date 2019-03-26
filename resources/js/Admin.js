@@ -15,7 +15,9 @@ class Admin extends Component {
         super(props);
 
         this.state = {
+            loading: true,
             authenticated: false,
+            token: {},
             user: {},
         };
     }
@@ -29,8 +31,40 @@ class Admin extends Component {
                 },
             });
 
-            this.setState({ user: response.data });
-        } catch (error) {}
+            this.storeAuthToken(JSON.stringify(token));
+
+            this.setState({
+                user: response.data,
+                authenticated: true,
+                loading: false,
+                token,
+            });
+        } catch (error) {
+            this.setState({
+                authenticated: false,
+                loading: false,
+            });
+        }
+    };
+
+    storeAuthToken = tokenString => {
+        window.localStorage.setItem('token', tokenString);
+    };
+
+    signoutUser = async () => {
+        if (!this.state.authenticated) {
+            return;
+        }
+
+        try {
+            await axios.post('/api/auth/signout');
+
+            this.setState({
+                authenticated: false,
+            });
+
+            window.localStorage.removeItem('token');
+        } catch (e) {}
     };
 
     authenticateUser = async token => {
@@ -38,16 +72,26 @@ class Admin extends Component {
             return;
         }
 
-        await this.fetchAuthUser(token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${
+            token.auth_token
+        }`;
 
-        this.setState({
-            authenticated: true,
-            token,
-        });
+        await this.fetchAuthUser(token);
     };
 
+    async componentDidMount() {
+        const token = JSON.parse(window.localStorage.getItem('token'));
+
+        await this.authenticateUser(token);
+    }
+
     render() {
-        const { authenticated } = this.state;
+        const { authenticated, loading } = this.state;
+
+        if (loading) {
+            return '....';
+        }
+
         return (
             <Router>
                 <Switch>
@@ -75,6 +119,7 @@ class Admin extends Component {
                                     <View
                                         {...componentProps}
                                         pageProps={{
+                                            signoutUser: this.signoutUser,
                                             authenticateUser: this
                                                 .authenticateUser,
                                         }}

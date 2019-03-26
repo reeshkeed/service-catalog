@@ -64,4 +64,15 @@ class SessionsController extends Controller
           'expires_in' => auth()->factory()->getTTL() * 60
       ]);
     }
+
+    public function signout() {
+      $user = auth()->guard('api')->user();
+
+      $user->auth_token = null;
+      $user->update();
+
+      auth()->guard('api')->logout();
+
+      return response()->json(['message' => 'Successfully signed out']);
+    }
 }
