@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,12 +11,12 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::namespace('Api')->name('api.')->group(function() {
-  Route::middleware('api')->prefix('auth')->name('auth.')->group(function() {
-    //Return authentication token
-    Route::post('signin', 'Auth\SessionsController@signin')->name('signin');
+Route::namespace('Api')->name('api.')->group(function () {
+    Route::middleware('api')->prefix('auth')->name('auth.')->group(function () {
+        //Return authentication token
+        Route::post('signin', 'Auth\SessionsController@signin')->name('signin');
 
-    //Return authentication user
-    Route::get('user', 'Auth\SessionsController@user')->name('user');
-  });
+        //Return authentication user
+        Route::get('user', 'Auth\SessionsController@user')->name('user');
+    });
 });
